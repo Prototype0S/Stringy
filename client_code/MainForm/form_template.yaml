@@ -13,7 +13,7 @@ components:
   - event_bindings: {}
     layout_properties: {}
     name: events_link
-    properties: {icon: 'fa:calendar', text: Events}
+    properties: {icon: 'fa:calendar', text: Calendar}
     type: Link
   - event_bindings: {}
     layout_properties: {}
@@ -49,7 +49,7 @@ components:
   properties: {}
   type: FlowPanel
 - layout_properties: {slot: title}
-  name: label_1
+  name: label_title
   properties: {icon: '', text: Stringy}
   type: Label
 - components:

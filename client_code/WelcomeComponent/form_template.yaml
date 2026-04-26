@@ -1,6 +1,6 @@
 components:
 - layout_properties: {grid_position: 'JMVGDM,SWBDGR'}
-  name: label_1
+  name: label_title
   properties: {align: center, bold: true, font_size: 38, icon: '', text: Welcome👋}
   type: Label
 container: {type: ColumnPanel}

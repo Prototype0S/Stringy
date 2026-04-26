@@ -1,7 +1,11 @@
 components:
 - layout_properties: {grid_position: 'GNTOEE,IMRFWN'}
-  name: label_1
+  name: label_title
   properties: {align: center, text: File Manager}
   type: Label
+- layout_properties: {grid_position: 'RNQIQN,YMABMK'}
+  name: file_loader_1
+  properties: {multiple: true}
+  type: FileLoader
 container: {type: ColumnPanel}
 is_package: true

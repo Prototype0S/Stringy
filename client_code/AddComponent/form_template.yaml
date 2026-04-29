@@ -3,5 +3,55 @@ components:
   name: label_title
   properties: {align: center, text: Add}
   type: Label
+- components:
+  - components:
+    - layout_properties: {col_xs: 0, row: VJTWXP, width_xs: 6}
+      name: label_1
+      properties: {role: input-prompt, text: Enter event name...}
+      type: Label
+    - layout_properties: {col_xs: 6, row: VJTWXP, width_xs: 6}
+      name: event_name
+      properties: {}
+      type: TextBox
+    - layout_properties: {col_xs: 0, row: NGMDDK, width_xs: 6}
+      name: label_2
+      properties: {role: input-prompt, text: Enter or pick a date...}
+      type: Label
+    - layout_properties: {col_xs: 6, row: NGMDDK, width_xs: 6}
+      name: date_picker_1
+      properties: {}
+      type: DatePicker
+    - layout_properties: {col_xs: 0, row: DLWNPI, width_xs: 6}
+      name: label_3
+      properties: {role: input-prompt, text: Enter a start time...}
+      type: Label
+    - layout_properties: {col_xs: 6, row: DLWNPI, width_xs: 6}
+      name: start_time
+      properties: {}
+      type: TextBox
+    - layout_properties: {col_xs: 0, row: UBNOKS, width_xs: 6}
+      name: label_4
+      properties: {role: input-prompt, text: Enter an end time...}
+      type: Label
+    - layout_properties: {col_xs: 6, row: UBNOKS, width_xs: 6}
+      name: end_time
+      properties: {}
+      type: TextBox
+    layout_properties: {grid_position: 'TAQMOT,KPDQLF'}
+    name: grid_panel_1
+    properties: {}
+    type: GridPanel
+  - layout_properties: {grid_position: 'JYUWXJ,CSEBTS'}
+    name: warning
+    properties: {align: center, foreground: '#FF0000', icon: 'fa:warning', icon_align: left, role: headline, text: '', visible: false}
+    type: Label
+  layout_properties: {grid_position: 'XCHNOH,CBWMPQ'}
+  name: outlined_card_1
+  properties: {role: outlined-card}
+  type: ColumnPanel
+- layout_properties: {grid_position: 'RCVPSK,UKBLRX'}
+  name: save
+  properties: {icon: 'fa:save', role: filled-button, text: Save}
+  type: Button
 container: {type: ColumnPanel}
 is_package: true

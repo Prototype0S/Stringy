@@ -9,11 +9,20 @@ components:
     properties: {}
     type: Plot
   - components:
-    - layout_properties: {grid_position: 'COYGEW,WGBRID'}
-      name: label_1
-      properties: {align: center, bold: true, foreground: '#ff0000', icon: 'fa:warning', text: ''}
-      type: Label
-    layout_properties: {grid_position: 'NGKWPU,OGOTJB'}
+    - components:
+      - layout_properties: {col_xs: 0, row: JUATVS, width_xs: 6}
+        name: label_1
+        properties: {}
+        type: Label
+      - layout_properties: {col_xs: 6, row: JUATVS, width_xs: 6}
+        name: text_box_1
+        properties: {}
+        type: TextBox
+      layout_properties: {grid_position: 'AJRFUM,XIZZCE'}
+      name: grid_panel_1
+      properties: {}
+      type: GridPanel
+    layout_properties: {grid_position: 'QYIZJP,XNKETW'}
     name: outlined_card_2
     properties: {role: outlined-card}
     type: ColumnPanel

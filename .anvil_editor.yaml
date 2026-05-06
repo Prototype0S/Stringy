@@ -7,6 +7,7 @@ unique_ids:
     AddComponent: '1777177108806319497378204.73737'
     AddComponent.ItemTemplate2: '1777430685024171518397706.24533'
     CalendarComponent: '1777177086369259304316112.36316'
+    ChatComponent: '177802766557069482720837.73921'
     FileComponent: '1777178580626713924507238.4015'
     FileComponent.ItemTemplate1: '1777179537284523370887193.81274'
     HomeComponent: '1777177589399474958012676.66516'
@@ -16,4 +17,5 @@ unique_ids:
   modules: {}
   scripts: {}
   server_modules:
+    calender_server_code: '1778026511044874214794723.9797'
     user_services: '1777182163307541696103666.0514'

@@ -1,0 +1,21 @@
+components:
+- layout_properties: {slot: default}
+  name: content_panel
+  properties: {}
+  type: ColumnPanel
+- layout_properties: {slot: nav-right}
+  name: navbar_links
+  properties: {}
+  type: FlowPanel
+- layout_properties: {slot: title}
+  name: label_title
+  properties: {icon: '', text: Stringy}
+  type: Label
+- layout_properties: {slot: left-nav}
+  name: label_2
+  properties: {align: center, bold: true, italic: false, text: Channels, underline: false}
+  type: Label
+container:
+  properties: {html: '@theme:standard-page.html'}
+  type: HtmlTemplate
+is_package: true

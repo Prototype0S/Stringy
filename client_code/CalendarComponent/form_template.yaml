@@ -12,11 +12,43 @@ components:
     - components:
       - layout_properties: {col_xs: 0, row: JUATVS, width_xs: 6}
         name: label_1
-        properties: {}
+        properties: {text: Event name}
         type: Label
       - layout_properties: {col_xs: 6, row: JUATVS, width_xs: 6}
-        name: text_box_1
-        properties: {}
+        name: event_name
+        properties: {placeholder: Event name here...}
+        type: TextBox
+      - layout_properties: {col_xs: 0, row: HMAAKC, width_xs: 6}
+        name: label_2
+        properties: {text: Start time}
+        type: Label
+      - layout_properties: {col_xs: 6, row: HMAAKC, width_xs: 6}
+        name: start_time
+        properties: {placeholder: Start time here...}
+        type: TextBox
+      - layout_properties: {col_xs: 0, row: GVXWKV, width_xs: 6}
+        name: label_3
+        properties: {text: End time}
+        type: Label
+      - layout_properties: {col_xs: 6, row: GVXWKV, width_xs: 6}
+        name: end_time
+        properties: {placeholder: End time here...}
+        type: TextBox
+      - layout_properties: {col_xs: 0, row: OGDYNF, width_xs: 6}
+        name: label_4
+        properties: {text: Date}
+        type: Label
+      - layout_properties: {col_xs: 6, row: OGDYNF, width_xs: 6}
+        name: date_picker_1
+        properties: {placeholder: Date here...}
+        type: DatePicker
+      - layout_properties: {col_xs: 0, row: QCYKTO, width_xs: 6}
+        name: label_5
+        properties: {text: 'Delete an event?'}
+        type: Label
+      - layout_properties: {col_xs: 6, row: QCYKTO, width_xs: 6}
+        name: delete
+        properties: {placeholder: Enter the name of the event to delete...}
         type: TextBox
       layout_properties: {grid_position: 'AJRFUM,XIZZCE'}
       name: grid_panel_1
@@ -26,6 +58,14 @@ components:
     name: outlined_card_2
     properties: {role: outlined-card}
     type: ColumnPanel
+  - layout_properties: {grid_position: 'OJNBYB,SEICYX'}
+    name: button_save
+    properties: {align: right, icon: 'fa:save', role: filled-button, text: Save}
+    type: Button
+  - layout_properties: {grid_position: 'OWAQIZ,PPYHFI'}
+    name: warning
+    properties: {align: center, icon: 'fa:warning'}
+    type: Label
   layout_properties: {grid_position: 'PUOATV,BATTLU'}
   name: outlined_card_1
   properties: {role: outlined-card}

@@ -1,7 +1,7 @@
 from ._anvil_designer import CalendarComponentTemplate
 from anvil import *
+import anvil.server
 import plotly.graph_objects as go
-from anvil.tables import app_tables
 from datetime import datetime
 
 
@@ -11,27 +11,40 @@ class CalendarComponent(CalendarComponentTemplate):
 
     self.warning.visible = False
 
-    self.refresh_ui()
+    # auto cleanup past events
+    anvil.server.call('cleanup_events')
 
-
-  # -----------------------
-  # MAIN LOAD FUNCTION
-  # -----------------------
-  def refresh_ui(self):
     self.load_chart()
-    self.load_events()
 
 
   # -----------------------
-  # ADD EVENT (merged AddComponent logic)
+  # SAVE / DELETE LOGIC
   # -----------------------
+  @handle("button_save", "click")
   def button_save_click(self, **event_args):
+
+    delete_name = self.delete.text.strip() if self.delete.text else ""
+
+    # 🧹 DELETE MODE
+    if delete_name:
+      deleted = anvil.server.call('delete_event_by_name', delete_name)
+
+      if deleted > 0:
+        self.show_success(f"Deleted {deleted} event(s)")
+      else:
+        self.show_warning("No matching events found")
+
+      self.delete.text = ""
+      self.load_chart()
+      return
+
+
+    # ➕ ADD MODE
     name = self.event_name.text
     date = self.date_picker_1.date
     start_text = self.start_time.text
     end_text = self.end_time.text
 
-    # validation
     missing = []
     if not name:
       missing.append("event name")
@@ -44,48 +57,69 @@ class CalendarComponent(CalendarComponentTemplate):
       self.show_warning("Missing: " + ", ".join(missing))
       return
 
-    # parse time safely
+
     start_time = self.parse_time(start_text)
     if not start_time:
-      self.show_warning("Invalid start time (use HH:MM or HH:MM AM/PM)")
+      self.show_warning("Invalid start time")
       return
 
-    end_time = self.parse_time(end_text) if end_text else None
+    end_time = None
+    if end_text:
+      end_time = self.parse_time(end_text)
+      if not end_time:
+        self.show_warning("Invalid end time")
+        return
+
 
     start_dt = datetime.combine(date, start_time)
     end_dt = datetime.combine(date, end_time) if end_time else None
 
-    # save
-    app_tables.events.add_row(
-      name=name,
-      start=start_dt,
-      end=end_dt,
-      created_by=None
-    )
+    anvil.server.call('add_event', name, start_dt, end_dt)
 
     self.show_success("Event saved")
     self.clear_form()
-    self.refresh_ui()
+    self.load_chart()
 
 
   # -----------------------
-  # PLOTLY CHART
+  # CHART (with hover fix)
   # -----------------------
   def load_chart(self):
-    data = {}
+    rows = anvil.server.call('get_events')
 
-    for row in app_tables.events.search():
-      day = row['start'].date()
-      data[day] = data.get(day, 0) + 1
+    traces = []
 
-    fig = go.Figure(data=[
-      go.Bar(
-        x=list(data.keys()),
-        y=list(data.values())
+    for row in rows:
+      start = row['start']
+      end = row['end'] if row['end'] else row['start']
+      name = row['name']
+
+      duration = (end - start).total_seconds() * 1000
+
+      traces.append(go.Bar(
+        x=[duration],
+        y=[name],
+        base=start,
+        orientation='h',
+
+        # 🔥 THIS is where hover text goes
+        hovertext=f"{name}<br>Start: {start.strftime('%H:%M')}<br>End: {end.strftime('%H:%M')}",
+        hoverinfo="text"
+      ))
+
+    fig = go.Figure(
+      data=traces,
+      layout=go.Layout(
+        xaxis=dict(
+          type="date",
+          tickformat="%H:%M",
+          title="Time"
+        ),
+        yaxis=dict(title="Events")
       )
-    ])
+    )
 
-    self.plot_timeline.figure = fig
+    self.plot_1.figure = fig
 
 
   # -----------------------
@@ -103,13 +137,6 @@ class CalendarComponent(CalendarComponentTemplate):
     return None
 
 
-  def clear_form(self):
-    self.event_name.text = ""
-    self.date_picker_1.date = None
-    self.start_time.text = ""
-    self.end_time.text = ""
-
-
   def show_warning(self, msg):
     self.warning.visible = True
     self.warning.text = msg
@@ -120,3 +147,10 @@ class CalendarComponent(CalendarComponentTemplate):
     self.warning.visible = True
     self.warning.text = msg
     self.warning.foreground = "#000000"
+
+
+  def clear_form(self):
+    self.event_name.text = ""
+    self.date_picker_1.date = None
+    self.start_time.text = ""
+    self.end_time.text = ""

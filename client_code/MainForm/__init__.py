@@ -11,6 +11,7 @@ from ..SetDetailsComponent import SetDetailsComponent
 from ..WelcomeComponent import WelcomeComponent
 from ..FileComponent import FileComponent
 from ..SetDetailsComponent import SetDetailsComponent
+from ..ChatComponent import ChatComponent
 
 class MainForm(MainFormTemplate):
   def __init__(self, **properties):
@@ -38,6 +39,9 @@ class MainForm(MainFormTemplate):
     elif state == "calendar":
       cmpt = CalendarComponent()
       breadcrumb = self.breadcrumb_stem + " - Calendar"
+    elif state == "chat":
+      cmpt = ChatComponent()
+      breadcrumb = self.breadcrumb_stem
 
     elif state == "files":
       cmpt = FileComponent()
@@ -75,6 +79,7 @@ class MainForm(MainFormTemplate):
     self.events_link.role = "selected" if state == "calendar" else None
     self.files_link.role = "selected" if state == "files" else None
     self.account_link.role = "selected" if state == "account" else None
+    self.chat_link.role = "selected" if state == "chat" else None
 
   # ------------------------------
   # LOGIN/LOGOUT VISIBILITY
@@ -123,3 +128,8 @@ class MainForm(MainFormTemplate):
   def logout_link_click(self, **event_args):
     anvil.users.logout()
     self.switch_component("home")
+
+  @handle("chat_link", "click")
+  def chat_link_click(self, **event_args):
+    self.switch_component("chat")
+

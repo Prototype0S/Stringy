@@ -15,23 +15,23 @@ class CalendarComponent(CalendarComponentTemplate):
     anvil.server.call('cleanup_events')
 
     self.load_chart()
-
-
+    user = anvil.users.get_user()
+    if user is None:
+      self.show_warning("You must be signed in to use this feature")
+      return
   # -----------------------
   # SAVE / DELETE LOGIC
   # -----------------------
   @handle("button_save", "click")
   def button_save_click(self, **event_args):
-
+    user = anvil.users.get_user()
     delete_name = self.delete.text.strip() if self.delete.text else ""
 
     # 🧹 DELETE MODE
     if delete_name:
       deleted = anvil.server.call('delete_event_by_name', delete_name)
 
-      if deleted > 0:
-        self.show_success(f"Deleted {deleted} event(s)")
-      else:
+      if deleted <= 0:
         self.show_warning("No matching events found")
 
       self.delete.text = ""
@@ -44,7 +44,7 @@ class CalendarComponent(CalendarComponentTemplate):
     date = self.date_picker_1.date
     start_text = self.start_time.text
     end_text = self.end_time.text
-
+    
     missing = []
     if not name:
       missing.append("event name")
@@ -52,10 +52,13 @@ class CalendarComponent(CalendarComponentTemplate):
       missing.append("date")
     if not start_text:
       missing.append("start time")
-
+    
+      
     if missing:
       self.show_warning("Missing: " + ", ".join(missing))
       return
+      
+
 
 
     start_time = self.parse_time(start_text)
@@ -69,16 +72,18 @@ class CalendarComponent(CalendarComponentTemplate):
       if not end_time:
         self.show_warning("Invalid end time")
         return
-
+    
 
     start_dt = datetime.combine(date, start_time)
     end_dt = datetime.combine(date, end_time) if end_time else None
-
-    anvil.server.call('add_event', name, start_dt, end_dt)
-
-    self.show_success("Event saved")
-    self.clear_form()
-    self.load_chart()
+    if user is not None:
+      anvil.server.call('add_event', name, start_dt, end_dt)
+      self.clear_form()
+      self.load_chart()
+    else:
+      self.show_warning("You must be signed in to use this feature")
+      self.clear_form()
+      return
 
 
   # -----------------------
@@ -143,10 +148,7 @@ class CalendarComponent(CalendarComponentTemplate):
     self.warning.foreground = "#ff0000"
 
 
-  def show_success(self, msg):
-    self.warning.visible = True
-    self.warning.text = msg
-    self.warning.foreground = "#000000"
+
 
 
   def clear_form(self):

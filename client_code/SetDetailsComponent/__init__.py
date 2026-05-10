@@ -28,6 +28,7 @@ class SetDetailsComponent(SetDetailsComponentTemplate):
       self.label_error.text = "Last name cannot be blank"
       self.label_error.visible = True
       return
+    
     else:
       return
     self.label_error.visible = False

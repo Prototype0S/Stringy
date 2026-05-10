@@ -1,5 +1,32 @@
 components:
-- layout_properties: {slot: default}
+- components:
+  - components:
+    - layout_properties: {grid_position: 'PDQZBN,HXDMDJ'}
+      name: channel_label
+      properties: {}
+      type: Label
+    - layout_properties: {grid_position: 'QEYVOT,VMNWEO'}
+      name: repeating_messages
+      properties: {item_template: ChatComponent.ItemTemplate3}
+      type: RepeatingPanel
+    - components:
+      - layout_properties: {col_xs: 0, row: DWYSGX, width_xs: 9}
+        name: message_input
+        properties: {align: right, placeholder: Say something...}
+        type: TextBox
+      - layout_properties: {col_xs: 8, row: NBIXHC, width_xs: 2}
+        name: outlined_button_1
+        properties: {role: outlined-button, text: outlined_button_1}
+        type: Button
+      layout_properties: {grid_position: 'KHUDNE,IBYLAU'}
+      name: grid_panel_1
+      properties: {}
+      type: GridPanel
+    layout_properties: {grid_position: 'EKSNFR,AWXJDG'}
+    name: outlined_card_1
+    properties: {role: outlined-card}
+    type: ColumnPanel
+  layout_properties: {slot: default}
   name: content_panel
   properties: {}
   type: ColumnPanel
@@ -11,10 +38,27 @@ components:
   name: label_title
   properties: {icon: '', text: Stringy}
   type: Label
-- layout_properties: {slot: left-nav}
-  name: label_2
-  properties: {align: center, bold: true, italic: false, text: Channels, underline: false}
-  type: Label
+- components:
+  - layout_properties: {grid_position: 'MFROSN,XHDOFU'}
+    name: label_2
+    properties: {align: center, bold: true, italic: false, text: Channels, underline: false}
+    type: Label
+  - layout_properties: {grid_position: 'PZZCAW,EJRFXZ'}
+    name: general
+    properties: {role: null, text: General}
+    type: Button
+  - layout_properties: {grid_position: 'GHSGQC,IEIUJG'}
+    name: sheet_music
+    properties: {role: null, text: Sheet music}
+    type: Button
+  - layout_properties: {grid_position: 'DGYOIF,GFAUDC'}
+    name: events
+    properties: {role: null, text: Events}
+    type: Button
+  layout_properties: {slot: left-nav}
+  name: column_panel_1
+  properties: {}
+  type: ColumnPanel
 container:
   properties: {html: '@theme:standard-page.html'}
   type: HtmlTemplate

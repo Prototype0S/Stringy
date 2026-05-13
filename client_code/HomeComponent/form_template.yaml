@@ -3,5 +3,18 @@ components:
   name: label_1
   properties: {align: center, text: Home}
   type: Label
+- components:
+  - layout_properties: {grid_position: 'MNDTZR,NYYKTZ'}
+    name: label_2
+    properties: {align: center, bold: false, font: '', font_size: 40, role: title, text: Welcome 👋}
+    type: Label
+  - layout_properties: {grid_position: 'BHUMMI,XPQMQE'}
+    name: label_3
+    properties: {align: center, text: Press something to start...}
+    type: Label
+  layout_properties: {grid_position: 'FALPFY,SHURKH'}
+  name: outlined_card_1
+  properties: {role: outlined-card}
+  type: ColumnPanel
 container: {type: ColumnPanel}
 is_package: true

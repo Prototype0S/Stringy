@@ -26,22 +26,22 @@ class MainForm(MainFormTemplate):
   # ------------------------------
   # CENTRAL NAVIGATION ROUTER
   # ------------------------------
-  def switch_component(self, state):
+  def switch_component(self, state, channel="General"):
     """Route to a component based on state name."""
 
-    user = anvil.users.get_user()
 
     # Determine component + breadcrumb
     if state == "home":
-      cmpt = HomeComponent() if user else WelcomeComponent()
+      cmpt = HomeComponent()
       breadcrumb = self.breadcrumb_stem
 
     elif state == "calendar":
       cmpt = CalendarComponent()
       breadcrumb = self.breadcrumb_stem + " - Calendar"
+      
     elif state == "chat":
-      cmpt = ChatComponent()
-      breadcrumb = self.breadcrumb_stem
+      cmpt = ChatComponent(channel=channel)
+      breadcrumb = self.breadcrumb_stem + " - Chat"
 
     elif state == "files":
       cmpt = FileComponent()
@@ -54,6 +54,8 @@ class MainForm(MainFormTemplate):
     elif state == "details":
       cmpt = SetDetailsComponent()
       breadcrumb = self.breadcrumb_stem + " - Account - Set Details"
+
+    
     
     else:
       # fallback
@@ -133,3 +135,16 @@ class MainForm(MainFormTemplate):
   def chat_link_click(self, **event_args):
     self.switch_component("chat")
 
+  @handle("general", "click")
+  def general_click(self, **event_args):
+    self.switch_component("chat", "General")
+  
+  @handle("sheet_music", "click")
+  def sheet_music_click(self, **event_args):
+    self.switch_component("chat", "Sheet music")
+  
+  @handle("events", "click")
+  def events_click(self, **event_args):
+    self.switch_component("chat", "Events")
+  
+    

@@ -1,14 +1,45 @@
 from ._anvil_designer import ItemTemplateTemplate
 from anvil import *
-import anvil.server
-import anvil.users
-import anvil.tables as tables
-import anvil.tables.query as q
-from anvil.tables import app_tables
+from datetime import timezone, timedelta
+
 
 class ItemTemplate(ItemTemplateTemplate):
+
   def __init__(self, **properties):
-    # Set Form properties and Data Bindings.
     self.init_components(**properties)
 
-    # Any code you write here will run before the form opens.
+    msg = self.item
+
+    # -------------------
+    # USER (NO .get EVER)
+    # -------------------
+    user = msg['user']
+
+    if user:
+      first = user['first_name']
+      last = user['last_name']
+      email = user['email']
+      print(first, last, email)
+
+      if first or last:
+        self.username.text = f"{first or ''} {last or ''}".strip()
+      else:
+        self.username.text = email
+    else:
+      self.username.text = "Unknown user"
+
+    # -------------------
+    # MESSAGE
+    # -------------------
+    self.message_text.text = msg['message']
+
+    # -------------------
+    # TIME (BRISBANE)
+    # -------------------
+    brisbane = timezone(timedelta(hours=10))
+    time = msg['sent_at']
+
+    if time:
+      self.message_time.text = time.astimezone(brisbane).strftime("%H:%M")
+    else:
+      self.message_time.text = ""

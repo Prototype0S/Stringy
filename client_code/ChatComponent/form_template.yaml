@@ -6,7 +6,7 @@ components:
       properties: {align: center, bold: true, italic: false, text: ''}
       type: Label
     - layout_properties: {grid_position: 'GHIXMD,SQGCOK'}
-      name: repeating_panel_1
+      name: repeating_panel_messages
       properties: {item_template: ChatComponent.ItemTemplate}
       type: RepeatingPanel
     - components:
@@ -15,7 +15,7 @@ components:
         properties: {align: right, placeholder: Say something...}
         type: TextBox
       - layout_properties: {col_xs: 10, row: DWYSGX, width_xs: 2}
-        name: outlined_button_1
+        name: send_button
         properties: {icon: 'fa:send', role: outlined-button, text: ''}
         type: Button
       layout_properties: {grid_position: 'KHUDNE,IBYLAU'}

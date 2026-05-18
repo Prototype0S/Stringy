@@ -10,9 +10,6 @@ class ItemTemplate(ItemTemplateTemplate):
 
     msg = self.item
 
-    # -------------------
-    # USER (NO .get EVER)
-    # -------------------
     user = msg['user']
 
     if user:

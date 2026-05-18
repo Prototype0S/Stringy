@@ -1,15 +1,5 @@
 allow_embedding: false
 db_schema:
-  channels:
-    client: none
-    columns:
-    - admin_ui: {width: 200}
-      client_hidden: false
-      name: name
-      type: string
-    indexes: []
-    server: full
-    title: channels
   events:
     client: full
     columns:

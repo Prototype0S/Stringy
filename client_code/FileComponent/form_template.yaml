@@ -3,19 +3,20 @@ components:
   name: label_title
   properties: {align: center, text: File Manager}
   type: Label
-- layout_properties: {grid_position: 'PXXBAP,GCHBSB'}
-  name: image_1
-  properties: {display_mode: original_size}
-  type: Image
 - components:
-  - layout_properties: {col_xs: 0, row: JAUQLD, width_xs: 6}
+  - layout_properties: {full_width_row: false, grid_position: 'HVADJC,ECGETG'}
     name: file_loader_1
-    properties: {multiple: true}
+    properties: {font_size: 20, italic: false, multiple: true, role: filled-button}
     type: FileLoader
-  - layout_properties: {col_xs: 6, row: JAUQLD, width_xs: 6}
-    name: button_download
-    properties: {icon: 'fa:download', role: elevated-button, text: Download}
-    type: Button
+  - layout_properties: {grid_position: 'NWMUJK,MYJTAD'}
+    name: repeating_panel_1
+    properties: {item_template: FileComponent.ItemTemplate1}
+    type: RepeatingPanel
+  layout_properties: {grid_position: 'DJMEOD,DVGCIV'}
+  name: outlined_card_1
+  properties: {role: outlined-card}
+  type: ColumnPanel
+- components: []
   layout_properties: {grid_position: 'ABOPDH,VLAAHA'}
   name: grid_panel_1
   properties: {}

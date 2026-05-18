@@ -18,6 +18,28 @@ db_schema:
     indexes: []
     server: full
     title: events
+  files:
+    client: none
+    columns:
+    - admin_ui: {order: 0, width: 200}
+      client_hidden: false
+      name: file_name
+      type: string
+    - admin_ui: {order: 1, width: 200}
+      client_hidden: false
+      name: media
+      type: media
+    - admin_ui: {order: 2, width: 200}
+      client_hidden: false
+      name: content_type
+      type: string
+    - admin_ui: {order: 3, width: 200}
+      client_hidden: false
+      name: uploaded_at
+      type: datetime
+    indexes: []
+    server: full
+    title: files
   messages:
     client: none
     columns:

@@ -23,3 +23,4 @@ class AccountComponent(AccountComponentTemplate):
     main_form.switch_component("details")
 
 
+

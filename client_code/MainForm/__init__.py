@@ -2,7 +2,7 @@ from ._anvil_designer import MainFormTemplate
 from anvil import *
 import anvil.server
 import anvil.users
-from datetime import datetime
+from datetime import datetime, timezone
 from ..HomeComponent import HomeComponent
 from ..AccountComponent import AccountComponent
 from ..AddComponent import AddComponent
@@ -12,6 +12,7 @@ from ..WelcomeComponent import WelcomeComponent
 from ..FileComponent import FileComponent
 from ..SetDetailsComponent import SetDetailsComponent
 from ..ChatComponent import ChatComponent
+from ..LegalComponent import LegalComponent
 
 class MainForm(MainFormTemplate):
   def __init__(self, **properties):
@@ -28,7 +29,7 @@ class MainForm(MainFormTemplate):
   # ------------------------------
   def switch_component(self, state, channel="General"):
     """Route to a component based on state name."""
-
+    self.update_presence()
 
     # Determine component + breadcrumb
     if state == "home":
@@ -146,11 +147,19 @@ class MainForm(MainFormTemplate):
   @handle("events", "click")
   def events_click(self, **event_args):
     self.switch_component("chat", "Events")
-  @handle("timer_presence", "tick")
-  def timer_presence_tick(self, **event_args):
 
+  def update_presence(self):
     user = anvil.users.get_user()
+    if not user:
+      return
+    now = datetime.now(timezone.utc)
+    last_seen = user['last_seen']
+    # only update every 2 minutes
+    if (last_seen is None or (now - last_seen).total_seconds() > 120):
+      user['last_seen'] = now
 
-    if user:
-      user['last_seen'] = datetime.now()
-    print("tick")
+  @handle("link_legal", "click")
+  def link_legal_click(self, **event_args):
+    """This method is called when the link is clicked"""
+    self.content_panel.clear()
+    self.content_panel.add_component(LegalComponent())

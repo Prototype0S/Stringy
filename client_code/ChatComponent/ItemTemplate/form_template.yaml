@@ -13,7 +13,7 @@ components:
       name: message_text
       properties: {align: left}
       type: Label
-    layout_properties: {col_xs: 0, row: OMRVGV, width_xs: 4}
+    layout_properties: {col_xs: 0, row: OMRVGV, width_xs: 12}
     name: outlined_card_1
     properties: {role: outlined-card}
     type: ColumnPanel

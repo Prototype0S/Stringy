@@ -2,7 +2,7 @@ from ._anvil_designer import MainFormTemplate
 from anvil import *
 import anvil.server
 import anvil.users
-
+from datetime import datetime
 from ..HomeComponent import HomeComponent
 from ..AccountComponent import AccountComponent
 from ..AddComponent import AddComponent
@@ -146,5 +146,11 @@ class MainForm(MainFormTemplate):
   @handle("events", "click")
   def events_click(self, **event_args):
     self.switch_component("chat", "Events")
-  
-    
+  @handle("timer_presence", "tick")
+  def timer_presence_tick(self, **event_args):
+
+    user = anvil.users.get_user()
+
+    if user:
+      user['last_seen'] = datetime.now()
+    print("tick")

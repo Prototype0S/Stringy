@@ -1,5 +1,9 @@
 components:
-- components: []
+- components:
+  - layout_properties: {grid_position: 'KWWISC,CDFFZF'}
+    name: timer_presence
+    properties: {interval: 60}
+    type: Timer
   layout_properties: {slot: default}
   name: content_panel
   properties: {col_widths: '{}'}

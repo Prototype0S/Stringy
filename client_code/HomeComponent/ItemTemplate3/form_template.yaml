@@ -1,0 +1,11 @@
+components:
+- layout_properties: {grid_position: 'KBHQQJ,KEMQVV'}
+  name: label_username
+  properties: {}
+  type: Label
+- layout_properties: {grid_position: 'DLIAUR,RKGUOM'}
+  name: column_panel_1
+  properties: {}
+  type: ColumnPanel
+container: {type: ColumnPanel}
+is_package: true

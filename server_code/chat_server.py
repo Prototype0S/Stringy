@@ -17,19 +17,26 @@ def get_messages(channel):
     )
   )
 
+  output = []
+
   for m in messages:
 
     sender = m['user']
 
-    m['is_me'] = (
+    is_me = (
       user is not None
       and sender is not None
       and sender.get_id() == user.get_id()
     )
 
-  return messages
+    output.append({
+      "message": m['message'],
+      "user": sender,
+      "sent_at": m['sent_at'],
+      "is_me": is_me
+    })
 
-
+  return output
 @anvil.server.callable
 def send_message(channel, text):
 

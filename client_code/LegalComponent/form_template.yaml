@@ -4,6 +4,11 @@ components:
     name: label_1
     properties: {align: center, font_size: 40, text: Stringy's legal stuff}
     type: Label
+  - layout_properties: {grid_position: 'MHKHZW,RQVLNW'}
+    name: label_2
+    properties:
+      text: "Stringy term of service:\nThis site was made for students in string groups/ensembles to be able to connect and talk together, with a focus on talking about upcoming dates and being a hub for sheet music and support. \nThis site does allow under 16s, although the minimum age for this site is 13.\n\nThe rules are quite simple:\n•\tNo hate speech (racism, sexism, etc)\n•\tNo sharing private personal information\n•\tNo illegal content\n•\tNo sexual content\n•\tNo grooming/predatory behaviour\n•\tPlease do not swear too much\n•\tDo not abuse the file upload feature\n•\tDo not abuse the chat feature\n•\tWhile you can invite people to join, please make sure they are also in a strings group\n•\tKeep this a safe space for everyone\nIf any of these rules are broken, I hold the ability to remove you and any content from the site. If you would like to report anything or ask any questions, email: 28carroE@mbbc.qld.edu.au\n\nPrivacy Policy:\nTo ensure proper functionality as well as some quality of life features, Stringy collects personal data for these reasons.\nStringy stores:\n•\tFirst and last names\n•\tEmails\n•\tPasswords\n•\tChat logs\n•\tLogin times and activity\n•\tShared files\nPlease note that passwords are stored as an irreversible hash string, meaning that Stringy nor Anvil will be able to see your password.\nStringy also refuses to sell or share any user data. All user data is stored on a database to ensure proper functionality. If a user would like their data deleted or has any further questions, please email: 28carroE@mbbc.qld.edu.au"
+    type: Label
   layout_properties: {grid_position: 'WYVWHE,FZARXW'}
   name: outlined_card_1
   properties: {role: outlined-card}

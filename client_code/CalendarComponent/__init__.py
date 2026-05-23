@@ -1,50 +1,60 @@
 from ._anvil_designer import CalendarComponentTemplate
 from anvil import *
 import anvil.server
+import anvil.users
 import plotly.graph_objects as go
 from datetime import datetime
 
 
 class CalendarComponent(CalendarComponentTemplate):
+
   def __init__(self, **properties):
     self.init_components(**properties)
 
     self.warning.visible = False
 
-    # auto cleanup past events
-    anvil.server.call('cleanup_events')
+    user = anvil.users.get_user()
+    if not user:
+      self.show_warning("You must be signed in")
+      return
+
+    try:
+      anvil.server.call('cleanup_events')
+    except:
+      pass
 
     self.load_chart()
-    user = anvil.users.get_user()
-    if user is None:
-      self.show_warning("You must be signed in to use this feature")
-      return
+
   # -----------------------
-  # SAVE / DELETE LOGIC
+  # SAVE / DELETE
   # -----------------------
-  @handle("button_save", "click")
   def button_save_click(self, **event_args):
     user = anvil.users.get_user()
-    delete_name = self.delete.text.strip() if self.delete.text else ""
+    if not user:
+      self.show_warning("You must be signed in")
+      return
 
-    # 🧹 DELETE MODE
+    delete_name = (self.delete.text or "").strip()
+
+    # DELETE MODE
     if delete_name:
-      deleted = anvil.server.call('delete_event_by_name', delete_name)
-
-      if deleted <= 0:
-        self.show_warning("No matching events found")
+      try:
+        deleted = anvil.server.call('delete_event_by_name', delete_name)
+        if deleted <= 0:
+          self.show_warning("No matching events found")
+      except:
+        self.show_warning("Delete failed")
 
       self.delete.text = ""
       self.load_chart()
       return
 
-
-    # ➕ ADD MODE
-    name = self.event_name.text
+    # ADD MODE
+    name = (self.event_name.text or "").strip()
     date = self.date_picker_1.date
-    start_text = self.start_time.text
-    end_text = self.end_time.text
-    
+    start_text = (self.start_time.text or "").strip()
+    end_text = (self.end_time.text or "").strip()
+
     missing = []
     if not name:
       missing.append("event name")
@@ -52,135 +62,123 @@ class CalendarComponent(CalendarComponentTemplate):
       missing.append("date")
     if not start_text:
       missing.append("start time")
-    
-      
+
     if missing:
       self.show_warning("Missing: " + ", ".join(missing))
       return
-      
-
-
 
     start_time = self.parse_time(start_text)
     if not start_time:
       self.show_warning("Invalid start time")
       return
 
-    end_time = None
-    if end_text:
-      end_time = self.parse_time(end_text)
-      if not end_time:
-        self.show_warning("Invalid end time")
-        return
-    
+    end_time = self.parse_time(end_text) if end_text else None
+    if end_text and not end_time:
+      self.show_warning("Invalid end time")
+      return
 
     start_dt = datetime.combine(date, start_time)
     end_dt = datetime.combine(date, end_time) if end_time else None
-    if user is not None:
+
+    try:
       anvil.server.call('add_event', name, start_dt, end_dt)
-      self.clear_form()
-      self.load_chart()
-    else:
-      self.show_warning("You must be signed in to use this feature")
-      self.clear_form()
+    except:
+      self.show_warning("Failed to add event")
       return
 
+    self.clear_form()
+    self.load_chart()
 
   # -----------------------
-  # CHART (with hover fix)
+  # CHART (Anvil-safe)
   # -----------------------
-def load_chart(self):
-  rows = anvil.server.call('get_events')
+  def load_chart(self):
+    rows = anvil.server.call('get_events') or []
 
-  x = []
-  y = []
-  bases = []
-  hovertexts = []
+    names = []
+    starts = []
+    durations = []
+    hover = []
 
-  for row in rows:
-    start = row['start']
-    end = row['end'] if row['end'] else row['start']
-    name = row['name']
+    for row in rows:
+      name = getattr(row, 'name', 'Unnamed')
+      start = getattr(row, 'start', None)
+      end = getattr(row, 'end', None)
 
-    duration = (end - start).total_seconds() * 1000
+      if not start:
+        continue
 
-    x.append(duration)
-    y.append(name)
-    bases.append(start)
+      if not end:
+        end = start
 
-    hovertexts.append(
-      f"{name}<br>"
-      f"Start: {start.strftime('%H:%M')}<br>"
-      f"End: {end.strftime('%H:%M')}"
+      duration = (end - start).total_seconds() * 1000
+
+      names.append(name)
+      starts.append(start)
+      durations.append(duration)
+
+      hover.append(
+        f"{name}<br>"
+        f"{start.strftime('%H:%M')} → {end.strftime('%H:%M')}"
+      )
+
+    fig = go.Figure(
+      data=[
+        go.Bar(
+          x=durations,
+          y=names,
+          base=starts,
+          orientation='h',
+          hovertext=hover,
+          hoverinfo='text',
+          text=names,
+          textposition='inside',
+          insidetextanchor='start'
+        )
+      ]
     )
 
-  fig = go.Figure()
+    fig.update_layout(
+      height=max(400, len(names) * 45),
 
-  fig.add_trace(go.Bar(
-    x=x,
-    y=y,
-    base=bases,
-    orientation='h',
+      margin=dict(l=200, r=40, t=30, b=40),
 
-    hovertext=hovertexts,
-    hoverinfo="text",
+      xaxis=dict(
+        type="date",
+        tickformat="%H:%M",
+        title="Time"
+      ),
 
-    text=y,                # puts event names on bars
-    textposition="inside", # can also try "outside"
-    insidetextanchor="start"
-  ))
+      yaxis=dict(
+        title="Events",
+        automargin=True,
+        autorange="reversed"
+      ),
 
-  fig.update_layout(
-    height=max(400, len(y) * 45),
+      showlegend=False
+    )
 
-    margin=dict(
-      l=180,   # IMPORTANT: gives room for labels
-      r=40,
-      t=40,
-      b=40
-    ),
-
-    xaxis=dict(
-      type="date",
-      tickformat="%H:%M",
-      title="Time"
-    ),
-
-    yaxis=dict(
-      title="Events",
-      automargin=True,
-      autorange="reversed"
-    ),
-
-    showlegend=False
-  )
-
-  self.plot_1.figure = fig
-
+    self.plot_1.figure = fig
 
   # -----------------------
   # HELPERS
   # -----------------------
   def parse_time(self, text):
-    formats = ["%H:%M", "%I:%M %p"]
+    if not text:
+      return None
 
-    for fmt in formats:
+    for fmt in ["%H:%M", "%I:%M %p"]:
       try:
         return datetime.strptime(text.strip(), fmt).time()
       except:
-        pass
+        continue
 
     return None
-
 
   def show_warning(self, msg):
     self.warning.visible = True
     self.warning.text = msg
     self.warning.foreground = "#ff0000"
-
-
-
-
 
   def clear_form(self):
     self.event_name.text = ""

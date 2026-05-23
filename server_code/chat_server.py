@@ -51,3 +51,15 @@ def send_message(channel, text):
     message=text,
     sent_at=datetime.now(timezone.utc)
   )
+@anvil.server.callable
+
+def get_latest_message_time(channel):
+
+  messages = app_tables.messages.search(
+    tables.order_by("sent_at", ascending=False),
+    channel=channel
+  )
+
+  latest = next(iter(messages), None)
+
+  return latest['sent_at'] if latest else None

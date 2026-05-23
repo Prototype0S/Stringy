@@ -89,42 +89,73 @@ class CalendarComponent(CalendarComponentTemplate):
   # -----------------------
   # CHART (with hover fix)
   # -----------------------
-  def load_chart(self):
-    rows = anvil.server.call('get_events')
+def load_chart(self):
+  rows = anvil.server.call('get_events')
 
-    traces = []
+  x = []
+  y = []
+  bases = []
+  hovertexts = []
 
-    for row in rows:
-      start = row['start']
-      end = row['end'] if row['end'] else row['start']
-      name = row['name']
+  for row in rows:
+    start = row['start']
+    end = row['end'] if row['end'] else row['start']
+    name = row['name']
 
-      duration = (end - start).total_seconds() * 1000
+    duration = (end - start).total_seconds() * 1000
 
-      traces.append(go.Bar(
-        x=[duration],
-        y=[name],
-        base=start,
-        orientation='h',
+    x.append(duration)
+    y.append(name)
+    bases.append(start)
 
-        # 🔥 THIS is where hover text goes
-        hovertext=f"{name}<br>Start: {start.strftime('%H:%M')}<br>End: {end.strftime('%H:%M')}",
-        hoverinfo="text"
-      ))
-
-    fig = go.Figure(
-      data=traces,
-      layout=go.Layout(
-        xaxis=dict(
-          type="date",
-          tickformat="%H:%M",
-          title="Time"
-        ),
-        yaxis=dict(title="Events")
-      )
+    hovertexts.append(
+      f"{name}<br>"
+      f"Start: {start.strftime('%H:%M')}<br>"
+      f"End: {end.strftime('%H:%M')}"
     )
 
-    self.plot_1.figure = fig
+  fig = go.Figure()
+
+  fig.add_trace(go.Bar(
+    x=x,
+    y=y,
+    base=bases,
+    orientation='h',
+
+    hovertext=hovertexts,
+    hoverinfo="text",
+
+    text=y,                # puts event names on bars
+    textposition="inside", # can also try "outside"
+    insidetextanchor="start"
+  ))
+
+  fig.update_layout(
+    height=max(400, len(y) * 45),
+
+    margin=dict(
+      l=180,   # IMPORTANT: gives room for labels
+      r=40,
+      t=40,
+      b=40
+    ),
+
+    xaxis=dict(
+      type="date",
+      tickformat="%H:%M",
+      title="Time"
+    ),
+
+    yaxis=dict(
+      title="Events",
+      automargin=True,
+      autorange="reversed"
+    ),
+
+    showlegend=False
+  )
+
+  self.plot_1.figure = fig
 
 
   # -----------------------

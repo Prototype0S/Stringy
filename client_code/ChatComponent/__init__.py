@@ -10,6 +10,7 @@ class ChatComponent(ChatComponentTemplate):
     self.init_components(**properties)
 
     self.current_channel = channel
+    self.channel_label.text = channel
 
     self.load_messages()
 

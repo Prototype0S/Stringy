@@ -43,7 +43,10 @@ class MainForm(MainFormTemplate):
     elif state == "chat":
       cmpt = ChatComponent(channel=channel)
       breadcrumb = self.breadcrumb_stem + " - Chat"
-
+    elif state == "legal":
+      cmpt = LegalComponent()
+      breadcrumb = self.breadcrumb_stem + " - Legalities"
+      
     elif state == "files":
       cmpt = FileComponent()
       breadcrumb = self.breadcrumb_stem + " - File Manager"
@@ -83,7 +86,7 @@ class MainForm(MainFormTemplate):
     self.files_link.role = "selected" if state == "files" else None
     self.account_link.role = "selected" if state == "account" else None
     self.chat_link.role = "selected" if state == "chat" else None
-
+    self.link_legal.role = "selected" if state == "legal" else None
   # ------------------------------
   # LOGIN/LOGOUT VISIBILITY
   # ------------------------------
@@ -162,4 +165,4 @@ class MainForm(MainFormTemplate):
   def link_legal_click(self, **event_args):
     """This method is called when the link is clicked"""
     self.content_panel.clear()
-    self.content_panel.add_component(LegalComponent())
+    self.switch_component("legal")

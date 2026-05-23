@@ -1,6 +1,6 @@
 from ._anvil_designer import ItemTemplateTemplate
 from anvil import *
-
+from datetime import timezone, timedelta
 
 class ItemTemplate(ItemTemplateTemplate):
 
@@ -49,6 +49,14 @@ class ItemTemplate(ItemTemplateTemplate):
     time = msg['sent_at']
 
     if time:
-      self.message_time.text = time.strftime("%H:%M")
+    
+      australia = timezone(timedelta(hours=10))
+    
+      local_time = time.astimezone(australia)
+    
+      self.message_time.text = (
+        local_time.strftime("%H:%M")
+      )
+    
     else:
       self.message_time.text = ""

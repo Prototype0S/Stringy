@@ -7,17 +7,12 @@ from datetime import datetime
 
 
 class CalendarComponent(CalendarComponentTemplate):
-
   def __init__(self, **properties):
     self.init_components(**properties)
 
     self.warning.visible = False
 
-    user = anvil.users.get_user()
-    if not user:
-      self.show_warning("You must be signed in")
-      return
-
+    # auto cleanup past events
     try:
       anvil.server.call('cleanup_events')
     except:
@@ -25,18 +20,21 @@ class CalendarComponent(CalendarComponentTemplate):
 
     self.load_chart()
 
-  # -----------------------
-  # SAVE / DELETE
-  # -----------------------
-  def button_save_click(self, **event_args):
     user = anvil.users.get_user()
-    if not user:
-      self.show_warning("You must be signed in")
+    if user is None:
+      self.show_warning("You must be signed in to use this feature")
       return
 
-    delete_name = (self.delete.text or "").strip()
+  # -----------------------
+  # SAVE / DELETE LOGIC
+  # -----------------------
+  @handle("button_save", "click")
+  def button_save_click(self, **event_args):
+    user = anvil.users.get_user()
 
-    # DELETE MODE
+    delete_name = self.delete.text.strip() if self.delete.text else ""
+
+    # 🧹 DELETE MODE
     if delete_name:
       try:
         deleted = anvil.server.call('delete_event_by_name', delete_name)
@@ -49,7 +47,7 @@ class CalendarComponent(CalendarComponentTemplate):
       self.load_chart()
       return
 
-    # ADD MODE
+    # ➕ ADD MODE
     name = (self.event_name.text or "").strip()
     date = self.date_picker_1.date
     start_text = (self.start_time.text or "").strip()
@@ -72,113 +70,99 @@ class CalendarComponent(CalendarComponentTemplate):
       self.show_warning("Invalid start time")
       return
 
-    end_time = self.parse_time(end_text) if end_text else None
-    if end_text and not end_time:
-      self.show_warning("Invalid end time")
-      return
+    end_time = None
+    if end_text:
+      end_time = self.parse_time(end_text)
+      if not end_time:
+        self.show_warning("Invalid end time")
+        return
 
     start_dt = datetime.combine(date, start_time)
     end_dt = datetime.combine(date, end_time) if end_time else None
 
-    try:
+    if user is not None:
       anvil.server.call('add_event', name, start_dt, end_dt)
-    except:
-      self.show_warning("Failed to add event")
+      self.clear_form()
+      self.load_chart()
+    else:
+      self.show_warning("You must be signed in to use this feature")
+      self.clear_form()
       return
 
-    self.clear_form()
-    self.load_chart()
 
   # -----------------------
-  # CHART (Anvil-safe)
+  # CHART (ONLY FIXED LAYOUT)
   # -----------------------
   def load_chart(self):
     rows = anvil.server.call('get_events') or []
 
-    names = []
-    starts = []
-    durations = []
-    hover = []
+    traces = []
 
     for row in rows:
-      name = getattr(row, 'name', 'Unnamed')
-      start = getattr(row, 'start', None)
-      end = getattr(row, 'end', None)
-
-      if not start:
-        continue
-
-      if not end:
-        end = start
+      start = row['start']
+      end = row['end'] if row['end'] else row['start']
+      name = row['name']
 
       duration = (end - start).total_seconds() * 1000
 
-      names.append(name)
-      starts.append(start)
-      durations.append(duration)
+      traces.append(go.Bar(
+        x=[duration],
+        y=[name],
+        base=start,
+        orientation='h',
 
-      hover.append(
-        f"{name}<br>"
-        f"{start.strftime('%H:%M')} → {end.strftime('%H:%M')}"
-      )
+        hovertext=f"{name}<br>Start: {start.strftime('%H:%M')}<br>End: {end.strftime('%H:%M')}",
+        hoverinfo="text"
+      ))
 
     fig = go.Figure(
-      data=[
-        go.Bar(
-          x=durations,
-          y=names,
-          base=starts,
-          orientation='h',
-          hovertext=hover,
-          hoverinfo='text',
-          text=names,
-          textposition='inside',
-          insidetextanchor='start'
-        )
-      ]
-    )
+      data=traces,
+      layout=go.Layout(
+        xaxis=dict(
+          type="date",
+          tickformat="%H:%M",
+          title="Time"
+        ),
 
-    fig.update_layout(
-      height=max(400, len(names) * 45),
+        yaxis=dict(
+          title="Events",
+          automargin=True   # 🔥 KEY FIX for cropped labels
+        ),
 
-      margin=dict(l=200, r=40, t=30, b=40),
+        margin=dict(
+          l=280,  # 🔥 MAIN FIX: gives space for long event names
+          r=40,
+          t=40,
+          b=40
+        ),
 
-      xaxis=dict(
-        type="date",
-        tickformat="%H:%M",
-        title="Time"
-      ),
-
-      yaxis=dict(
-        title="Events",
-        automargin=True,
-        autorange="reversed"
-      ),
-
-      showlegend=False
+        height=max(400, len(traces) * 50)
+      )
     )
 
     self.plot_1.figure = fig
+
 
   # -----------------------
   # HELPERS
   # -----------------------
   def parse_time(self, text):
-    if not text:
-      return None
+    formats = ["%H:%M", "%I:%M %p"]
 
-    for fmt in ["%H:%M", "%I:%M %p"]:
+    for fmt in formats:
       try:
         return datetime.strptime(text.strip(), fmt).time()
       except:
-        continue
+        pass
 
     return None
+
 
   def show_warning(self, msg):
     self.warning.visible = True
     self.warning.text = msg
     self.warning.foreground = "#ff0000"
+
 
   def clear_form(self):
     self.event_name.text = ""

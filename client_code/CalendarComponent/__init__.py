@@ -126,11 +126,11 @@ class CalendarComponent(CalendarComponentTemplate):
 
         yaxis=dict(
           title="Events",
-          automargin=True   # 🔥 KEY FIX for cropped labels
+          automargin=True  
         ),
 
         margin=dict(
-          l=280,  # 🔥 MAIN FIX: gives space for long event names
+          l=280,  
           r=40,
           t=40,
           b=40

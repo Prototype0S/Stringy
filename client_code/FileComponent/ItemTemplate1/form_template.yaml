@@ -16,6 +16,14 @@ components:
   name: grid_panel_1
   properties: {}
   type: GridPanel
+- layout_properties: {grid_position: 'ZLZFBG,LDJEVU'}
+  name: label_1
+  properties: {text: 'Uploaded at:'}
+  type: Label
+- layout_properties: {grid_position: 'ZLZFBG,ZPWESD'}
+  name: label_upload_time
+  properties: {}
+  type: Label
 - layout_properties: {grid_position: 'ZLZFBG,RFCRVA'}
   name: button_delete
   properties: {icon: 'fa:trash', text: Delete}

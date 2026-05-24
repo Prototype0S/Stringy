@@ -30,6 +30,7 @@ class FileComponent(FileComponentTemplate):
     )
 
     self.repeating_panel_1.items = rows
+    
 
 
   # ------------------------------

@@ -1,17 +1,30 @@
 from ._anvil_designer import ItemTemplate1Template
 from anvil import *
 import anvil.media
-
+import anvil.tz
 class ItemTemplate1(ItemTemplate1Template):
 
   def __init__(self, **properties):
-
     self.init_components(**properties)
-
+    # ------------------------------
+    # FILE NAME
+    # ------------------------------
     self.label_file_name.text = (
-      self.item['file_name']
-    )
+      self.item['file_name'])
 
+    time = (
+      self.item['uploaded_at'].astimezone(anvil.tz.tzlocal()).strftime("%H:%M %d/%m/%Y"))
+
+    self.label_upload_time.text = time
+
+    media = self.item['media']
+    if media:
+      # show image preview
+      if media.content_type.startswith("image/"):
+        self.image_1.source = media
+        self.image_1.visible = True
+      else:
+        self.image_1.visible = False
 
   # ------------------------------
   # OPEN / DOWNLOAD FILE

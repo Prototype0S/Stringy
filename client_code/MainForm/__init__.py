@@ -22,7 +22,11 @@ class MainForm(MainFormTemplate):
     self.breadcrumb_stem = self.label_title.text
 
     # Load the initial view
-    self.switch_component("home")
+    user = anvil.users.get_user()
+    if user:
+      self.switch_component("home")
+    else:
+      self.switch_component("welcome")
 
   # ------------------------------
   # CENTRAL NAVIGATION ROUTER
@@ -35,7 +39,9 @@ class MainForm(MainFormTemplate):
     if state == "home":
       cmpt = HomeComponent()
       breadcrumb = self.breadcrumb_stem
-
+    elif state == "welcome":
+      cmpt = WelcomeComponent()
+      breadcrumb = self.breadcrumb_stem
     elif state == "calendar":
       cmpt = CalendarComponent()
       breadcrumb = self.breadcrumb_stem + " - Calendar"
@@ -87,6 +93,7 @@ class MainForm(MainFormTemplate):
     self.account_link.role = "selected" if state == "account" else None
     self.chat_link.role = "selected" if state == "chat" else None
     self.link_legal.role = "selected" if state == "legal" else None
+
   # ------------------------------
   # LOGIN/LOGOUT VISIBILITY
   # ------------------------------
@@ -98,7 +105,13 @@ class MainForm(MainFormTemplate):
     self.login_link.visible = not user
     self.account_link.visible = user
     self.logout_link.visible = user
-
+    self.chat_link.visible = user
+    self.events_link.visible = user
+    self.files_link.visible = user
+    self.general.visible = user
+    self.sheet_music.visible = user
+    self.events.visible = user
+    self.home_link.visilbe = user
   # ------------------------------
   # LINK HANDLERS
   # ------------------------------
@@ -133,7 +146,7 @@ class MainForm(MainFormTemplate):
   @handle("logout_link", "click")
   def logout_link_click(self, **event_args):
     anvil.users.logout()
-    self.switch_component("home")
+    self.switch_component("welcome")
 
   @handle("chat_link", "click")
   def chat_link_click(self, **event_args):

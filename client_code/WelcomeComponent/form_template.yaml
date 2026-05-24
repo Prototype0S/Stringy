@@ -1,7 +1,26 @@
 components:
 - layout_properties: {grid_position: 'JMVGDM,SWBDGR'}
   name: label_title
-  properties: {align: center, bold: true, font_size: 38, icon: '', text: Welcome👋}
+  properties: {align: center, bold: true, font_size: 38, icon: '', text: Welcome to Stringy👋}
   type: Label
+- components:
+  - layout_properties: {grid_position: ''}
+    name: image_1
+    properties: {source: _/theme/thousand yard stare violin.jpg}
+    type: Image
+  - layout_properties: {grid_position: 'OBPQZX,QOYZED'}
+    name: label_1
+    properties:
+      align: center
+      text: "Welcome to Stringy! \nHere you can upload files, find out important dates, or just connected with other talented strings players!\n"
+    type: Label
+  - layout_properties: {grid_position: 'FFPNTH,NPDSHO'}
+    name: label_2
+    properties: {align: center, bold: true, text: Log in or sign up to get started!}
+    type: Label
+  layout_properties: {grid_position: ''}
+  name: outlined_card_2
+  properties: {role: outlined-card}
+  type: ColumnPanel
 container: {type: ColumnPanel}
 is_package: true

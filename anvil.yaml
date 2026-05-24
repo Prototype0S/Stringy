@@ -110,7 +110,7 @@ db_schema:
     server: full
     title: Users
 dependencies: []
-metadata: {description: placeholder, logo_img: 'asset:thousand yard stare cat.jpg', title: idk what to name it}
+metadata: {description: 'Stringy, a tuff app for chatting with other strings players', logo_img: 'asset:thousand yard stare cat.jpg', title: Stringy}
 name: Stringy
 package_name: Stringy
 renamed: true

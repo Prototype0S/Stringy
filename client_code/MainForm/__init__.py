@@ -111,7 +111,7 @@ class MainForm(MainFormTemplate):
     self.general.visible = user
     self.sheet_music.visible = user
     self.events.visible = user
-    self.home_link.visilbe = user
+    self.home_link.visible = user
   # ------------------------------
   # LINK HANDLERS
   # ------------------------------

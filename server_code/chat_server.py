@@ -2,19 +2,21 @@ import anvil.server
 import anvil.tables as tables
 from anvil.tables import app_tables
 import anvil.users
+
 from datetime import datetime, timezone
 
 
+# =========================
+# GET MESSAGES
+# =========================
 @anvil.server.callable
 def get_messages(channel):
 
   user = anvil.users.get_user()
 
-  messages = list(
-    app_tables.messages.search(
-      tables.order_by("sent_at"),
-      channel=channel
-    )
+  messages = app_tables.messages.search(
+    tables.order_by("sent_at"),
+    channel=channel
   )
 
   output = []
@@ -30,6 +32,7 @@ def get_messages(channel):
     )
 
     output.append({
+      "id": m.get_id(),
       "message": m['message'],
       "user": sender,
       "sent_at": m['sent_at'],
@@ -37,12 +40,25 @@ def get_messages(channel):
     })
 
   return output
+
+
+# =========================
+# SEND MESSAGE
+# =========================
 @anvil.server.callable
 def send_message(channel, text):
 
   user = anvil.users.get_user()
 
-  if not user or not text or not text.strip():
+  if not user:
+    return
+
+  if not text:
+    return
+
+  text = text.strip()
+
+  if not text:
     return
 
   app_tables.messages.add_row(
@@ -51,8 +67,36 @@ def send_message(channel, text):
     message=text,
     sent_at=datetime.now(timezone.utc)
   )
-@anvil.server.callable
 
+
+# =========================
+# DELETE MESSAGE
+# =========================
+@anvil.server.callable
+def delete_message(message_id):
+
+  user = anvil.users.get_user()
+
+  if not user:
+    return
+
+  row = app_tables.messages.get_by_id(message_id)
+
+  if not row:
+    return
+
+  # safety check so users
+  # can only delete their own messages
+  if row['user'] != user:
+    return
+
+  row.delete()
+
+
+# =========================
+# GET LATEST MESSAGE TIME
+# =========================
+@anvil.server.callable
 def get_latest_message_time(channel):
 
   messages = app_tables.messages.search(

@@ -1,6 +1,7 @@
 from ._anvil_designer import ItemTemplateTemplate
 from anvil import *
 from datetime import timezone, timedelta
+import anvil.server
 
 class ItemTemplate(ItemTemplateTemplate):
 
@@ -41,7 +42,7 @@ class ItemTemplate(ItemTemplateTemplate):
     self.label_sent.text = (
       "✓ Sent" if msg.get('is_me') else ""
     )
-
+    self.button_delete.visible = (True if msg.get('is_me') else False)
 
     # -------------------
     # TIME
@@ -60,3 +61,16 @@ class ItemTemplate(ItemTemplateTemplate):
     
     else:
       self.message_time.text = ""
+
+  @handle("button_delete", "click")
+  def button_delete_click(self, **event_args):
+    """This method is called when the button is clicked"""
+    print("clicked")
+
+    anvil.server.call_s(
+        'delete_message',
+        self.item['id']
+      )
+
+    self.remove_from_parent()
+

@@ -62,3 +62,4 @@ class ChatComponent(ChatComponentTemplate):
     if latest != self.last_message_time:
       self.last_message_time = latest
       self.repeating_panel_messages.items = (messages)
+    

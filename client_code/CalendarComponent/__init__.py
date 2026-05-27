@@ -34,7 +34,7 @@ class CalendarComponent(CalendarComponentTemplate):
 
     delete_name = self.delete.text.strip() if self.delete.text else ""
 
-    # 🧹 DELETE MODE
+    #  DELETE MODE
     if delete_name:
       try:
         deleted = anvil.server.call('delete_event_by_name', delete_name)
@@ -47,7 +47,7 @@ class CalendarComponent(CalendarComponentTemplate):
       self.load_chart()
       return
 
-    # ➕ ADD MODE
+    #  ADD MODE
     name = (self.event_name.text or "").strip()
     date = self.date_picker_1.date
     start_text = (self.start_time.text or "").strip()

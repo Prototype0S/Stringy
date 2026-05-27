@@ -68,15 +68,15 @@ components:
     type: Link
   - layout_properties: {grid_position: 'IIWTKP,COPPJP'}
     name: general
-    properties: {align: center, bold: true, text: General, visible: true}
+    properties: {align: center, bold: true, text: '#General', visible: true}
     type: Link
   - layout_properties: {grid_position: 'ESWNWS,NHVRSY'}
     name: sheet_music
-    properties: {align: center, bold: true, text: Sheet music, visible: true}
+    properties: {align: center, bold: true, text: '#Sheet music', visible: true}
     type: Link
   - layout_properties: {grid_position: 'YVQGLG,THZYBX'}
     name: events
-    properties: {align: center, bold: true, text: Events, visible: true}
+    properties: {align: center, bold: true, text: '#Events', visible: true}
     type: Link
   layout_properties: {slot: left-nav}
   name: column_panel_1

@@ -4,6 +4,16 @@ components:
     name: label_1
     properties: {align: center, font_size: 40, text: Stringy's legal stuff}
     type: Label
+  - layout_properties: {grid_position: 'AEEJFP,VHIIMN'}
+    name: label_3
+    properties:
+      align: center
+      bold: true
+      foreground: '#ff0000'
+      text: |
+        The creation of an account and the usage of this service means the acceptance of all terms and agreements.
+      underline: true
+    type: Label
   - layout_properties: {grid_position: 'MHKHZW,RQVLNW'}
     name: label_2
     properties:
@@ -13,5 +23,7 @@ components:
   name: outlined_card_1
   properties: {role: outlined-card}
   type: ColumnPanel
-container: {type: ColumnPanel}
+container:
+  properties: {foreground: '#ff000'}
+  type: ColumnPanel
 is_package: true

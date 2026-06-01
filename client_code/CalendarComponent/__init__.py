@@ -111,7 +111,7 @@ class CalendarComponent(CalendarComponentTemplate):
         base=start,
         orientation='h',
 
-        hovertext=f"{name}<br>Date: {start.strftime('')}  Start: {start.strftime('%H:%M')}<br>End: {end.strftime('%H:%M')}",
+        hovertext=f"{name}<br>Start: {start.strftime('%H:%M, %d/%m')}<br>End: {end.strftime('%H:%M, %d/%m')}",
         hoverinfo="text"
       ))
 

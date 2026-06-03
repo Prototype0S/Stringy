@@ -45,7 +45,7 @@ class AddComponent(AddComponentTemplate):
         self.show_warning("Invalid end time format")
         return
 
-    # --- BUILD DATETIME ---
+   
     start_dt = datetime.combine(date, start_time)
     end_dt = datetime.combine(date, end_time) if end_time else None
 

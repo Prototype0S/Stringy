@@ -14,14 +14,10 @@ class ChatComponent(ChatComponentTemplate):
     self.last_message_time = None
     self.load_messages()
 
-
-  # ------------------------------
-  # LOAD MESSAGES
-  # ------------------------------
+  
   def load_messages(self):
 
-    messages = anvil.server.call_s(
-      "get_messages", self.current_channel)
+    messages = anvil.server.call_s("get_messages", self.current_channel)
 
     self.repeating_panel_messages.items = messages
 
@@ -29,9 +25,6 @@ class ChatComponent(ChatComponentTemplate):
       self.last_message_time = (messages[-1]['sent_at'])
 
 
-  # ------------------------------
-  # SEND MESSAGE
-  # ------------------------------
   @handle("send_button", "click")
   def send_button_click(self, **event_args):
 
@@ -40,11 +33,7 @@ class ChatComponent(ChatComponentTemplate):
     if not text or not text.strip():
       return
 
-    anvil.server.call_s(
-      "send_message",
-      self.current_channel,
-      text
-    )
+    anvil.server.call_s("send_message", self.current_channel, text)
 
     self.message_input.text = ""
 

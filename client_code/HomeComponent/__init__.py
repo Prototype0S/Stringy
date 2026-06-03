@@ -16,15 +16,9 @@ class HomeComponent(HomeComponentTemplate):
     self.load_online_users()
 
 
-  # ------------------------------
-  # LOAD ONLINE USERS
-  # ------------------------------
   def load_online_users(self):
 
-    cutoff = (
-      datetime.now()
-      - timedelta(minutes=10)
-    )
+    cutoff = (datetime.now()- timedelta(minutes=10))
 
     current_user = anvil.users.get_user()
 
@@ -34,12 +28,9 @@ class HomeComponent(HomeComponentTemplate):
       )
     )
 
-    # remove current user
     online_users = [
       user for user in online_users
       if user != current_user
     ]
 
-    self.repeating_panel_1.items = (
-      online_users
-    )
+    self.repeating_panel_1.items = (online_users)

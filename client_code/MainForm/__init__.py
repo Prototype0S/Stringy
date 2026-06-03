@@ -28,9 +28,7 @@ class MainForm(MainFormTemplate):
     else:
       self.switch_component("welcome")
 
-  # ------------------------------
-  # CENTRAL NAVIGATION ROUTER
-  # ------------------------------
+
   def switch_component(self, state, channel="General"):
     """Route to a component based on state name."""
     self.update_presence()
@@ -81,9 +79,7 @@ class MainForm(MainFormTemplate):
     self.set_active_link(state)
     self.update_auth_visibility()
 
-  # ------------------------------
-  # LINK HIGHLIGHTING
-  # ------------------------------
+
   def set_active_link(self, state):
     """Highlight the selected navigation link."""
 
@@ -94,9 +90,7 @@ class MainForm(MainFormTemplate):
     self.chat_link.role = "selected" if state == "chat" else None
     self.link_legal.role = "selected" if state == "legal" else None
 
-  # ------------------------------
-  # LOGIN/LOGOUT VISIBILITY
-  # ------------------------------
+
   def update_auth_visibility(self):
     """Show/hide login/register/account/logout links."""
     user = anvil.users.get_user()
@@ -112,9 +106,8 @@ class MainForm(MainFormTemplate):
     self.sheet_music.visible = user
     self.events.visible = user
     self.home_link.visible = user
-  # ------------------------------
-  # LINK HANDLERS
-  # ------------------------------
+
+  
   @handle("home_link", "click")
   def home_link_click(self, **event_args):
     self.switch_component("home")

@@ -12,14 +12,12 @@ class ItemTemplate1(ItemTemplate1Template):
     self.label_file_name.text = (
       self.item['file_name'])
 
-    time = (
-      self.item['uploaded_at'].astimezone(anvil.tz.tzlocal()).strftime("%H:%M %d/%m/%Y"))
+    time = (self.item['uploaded_at'].astimezone(anvil.tz.tzlocal()).strftime("%H:%M %d/%m/%Y"))
 
     self.label_upload_time.text = time
 
     media = self.item['media']
     if media:
-      # show image preview
       if media.content_type.startswith("image/"):
         self.image_1.source = media
         self.image_1.visible = True
@@ -59,14 +57,7 @@ class ItemTemplate1(ItemTemplate1Template):
       f"Delete '{self.item['file_name']}'?"
     ):
 
-      # delete from database
       self.item.delete()
-
-      # current repeating panel items
       items = list(self.parent.items)
-
-      # remove current item
       items.remove(self.item)
-
-      # update repeating panel
       self.parent.items = items

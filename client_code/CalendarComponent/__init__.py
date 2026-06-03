@@ -9,45 +9,50 @@ from datetime import datetime
 class CalendarComponent(CalendarComponentTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
-
     self.warning.visible = False
 
-    # auto cleanup past events
-    try:
-      anvil.server.call('cleanup_events')
-    except:
-      pass
-
-    self.load_chart()
-
+    # Guard early — no server calls if not signed in
     user = anvil.users.get_user()
     if user is None:
       self.show_warning("You must be signed in to use this feature")
       return
+
+    # Auto-cleanup past events
+    try:
+      anvil.server.call('cleanup_events')
+    except Exception:
+      pass
+
+    self.load_chart()
 
   # -----------------------
   # SAVE / DELETE LOGIC
   # -----------------------
   @handle("button_save", "click")
   def button_save_click(self, **event_args):
+    # Reset any previous warning
+    self.warning.visible = False
+
     user = anvil.users.get_user()
+    if user is None:
+      self.show_warning("You must be signed in to use this feature")
+      return
 
-    delete_name = self.delete.text.strip() if self.delete.text else ""
+    delete_name = (self.delete.text or "").strip()
 
-    #  DELETE MODE
+    # DELETE MODE
     if delete_name:
       try:
         deleted = anvil.server.call('delete_event_by_name', delete_name)
-        if deleted <= 0:
+        if not deleted:
           self.show_warning("No matching events found")
-      except:
+      except Exception:
         self.show_warning("Delete failed")
-
       self.delete.text = ""
       self.load_chart()
       return
 
-    #  ADD MODE
+    # ADD MODE
     name = (self.event_name.text or "").strip()
     date = self.date_picker_1.date
     start_text = (self.start_time.text or "").strip()
@@ -60,7 +65,6 @@ class CalendarComponent(CalendarComponentTemplate):
       missing.append("date")
     if not start_text:
       missing.append("start time")
-
     if missing:
       self.show_warning("Missing: " + ", ".join(missing))
       return
@@ -80,37 +84,26 @@ class CalendarComponent(CalendarComponentTemplate):
     start_dt = datetime.combine(date, start_time)
     end_dt = datetime.combine(date, end_time) if end_time else None
 
-    if user is not None:
-      anvil.server.call('add_event', name, start_dt, end_dt)
-      self.clear_form()
-      self.load_chart()
-    else:
-      self.show_warning("You must be signed in to use this feature")
-      self.clear_form()
-      return
-
+    anvil.server.call('add_event', name, start_dt, end_dt)
+    self.clear_form()
+    self.load_chart()
 
   # -----------------------
-  # CHART (ONLY FIXED LAYOUT)
+  # CHART
   # -----------------------
   def load_chart(self):
     rows = anvil.server.call('get_events') or []
-
     traces = []
-
     for row in rows:
       start = row['start']
       end = row['end'] if row['end'] else row['start']
       name = row['name']
-
       duration = (end - start).total_seconds() * 1000
-
       traces.append(go.Bar(
         x=[duration],
         y=[name],
         base=start,
         orientation='h',
-
         hovertext=f"{name}<br>Start: {start.strftime('%H:%M, %d/%m')}<br>End: {end.strftime('%H:%M, %d/%m')}",
         hoverinfo="text"
       ))
@@ -123,49 +116,40 @@ class CalendarComponent(CalendarComponentTemplate):
           tickformat="%H:%M",
           title="Time"
         ),
-
         yaxis=dict(
           title="Events",
-          automargin=True  
+          automargin=True
         ),
-
         margin=dict(
-          l=280,  
+          l=280,
           r=40,
           t=40,
           b=40
         ),
-
         height=max(400, len(traces) * 50)
       )
     )
-
     self.plot_1.figure = fig
-
 
   # -----------------------
   # HELPERS
   # -----------------------
   def parse_time(self, text):
-    formats = ["%H:%M", "%I:%M %p"]
-
-    for fmt in formats:
+    for fmt in ["%H:%M", "%I:%M %p"]:
       try:
         return datetime.strptime(text.strip(), fmt).time()
-      except:
+      except Exception:
         pass
-
     return None
-
 
   def show_warning(self, msg):
     self.warning.visible = True
     self.warning.text = msg
     self.warning.foreground = "#ff0000"
 
-
   def clear_form(self):
     self.event_name.text = ""
     self.date_picker_1.date = None
     self.start_time.text = ""
     self.end_time.text = ""
+    self.warning.visible = False
